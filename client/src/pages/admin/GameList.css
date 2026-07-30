@@ -10,6 +10,10 @@
 .admin-table-wrapper {
   overflow-x: auto;
   padding: var(--spacing-md);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
 }
 
 .admin-table {
@@ -20,11 +24,11 @@
 .admin-table th {
   text-align: left;
   padding: var(--spacing-md);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -40,18 +44,19 @@
 }
 
 .admin-table tr:hover td {
-  background: rgba(124, 58, 237, 0.03);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .admin-game-thumb {
-  width: 50px;
-  height: 50px;
+  width: 52px;
+  height: 52px;
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--color-bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--color-border);
 }
 
 .admin-game-thumb img {
@@ -61,8 +66,10 @@
 }
 
 .admin-game-title {
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-weight: 700;
   max-width: 250px;
+  color: var(--color-text-primary);
 }
 
 .admin-actions {

@@ -13,11 +13,18 @@ const AuthController = {
     try {
       const { name, email, password } = req.body;
 
-      // Validate required fields
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!name || !email || !password) {
         return res.status(400).json({
           success: false,
           message: 'Name, email, and password are required.',
+        });
+      }
+
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Please provide a valid email address with a domain (e.g., name@example.com).',
         });
       }
 

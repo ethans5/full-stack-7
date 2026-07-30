@@ -89,12 +89,41 @@ CREATE TABLE IF NOT EXISTS Order_Items (
 -- ================================================
 -- Default categories
 -- ================================================
-INSERT IGNORE INTO Categories (name) VALUES
-  ('Strategy'),
-  ('Family'),
-  ('Cooperative'),
-  ('Party'),
-  ('Expert'),
-  ('Children'),
-  ('Role-Playing'),
-  ('Card Game');
+INSERT IGNORE INTO Categories (id, name) VALUES
+  (1, 'Strategy'),
+  (2, 'Family'),
+  (3, 'Cooperative'),
+  (4, 'Party'),
+  (5, 'Expert'),
+  (6, 'Children'),
+  (7, 'Role-Playing'),
+  (8, 'Card Game');
+
+-- ================================================
+-- Default Sample Games
+-- ================================================
+INSERT IGNORE INTO Games (id, title, description, price, stock_quantity, image_url, player_count, min_age, play_duration) VALUES
+  (1, 'Catan (Settlers of Catan)', 'Trade, build, and settle the island of Catan in this legendary strategy board game. Collect resources and build settlements, cities, and roads.', 49.99, 15, 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?q=80&w=800&auto=format&fit=crop', '3-4', 10, '60-120 min'),
+  (2, 'Ticket to Ride', 'A cross-country train adventure where players collect cards of various types of train cars to claim railway routes connecting cities.', 44.99, 12, 'https://images.unsplash.com/photo-1606167668584-78701c57f13d?q=80&w=800&auto=format&fit=crop', '2-5', 8, '30-60 min'),
+  (3, 'Codenames', 'Two rival spymasters know the secret identities of 25 agents. Their teammates know the agents only by their CODENAMES. A thrilling party game.', 19.99, 25, 'https://images.unsplash.com/photo-1563941433-b6a0946530d8?q=80&w=800&auto=format&fit=crop', '2-8+', 14, '15-30 min'),
+  (4, 'Pandemic', 'You and your team are members of a disease control team fighting four deadly plagues. Work together to save humanity in this cooperative masterpiece.', 39.99, 8, 'https://images.unsplash.com/photo-1585504198199-20277593b94f?q=80&w=800&auto=format&fit=crop', '2-4', 8, '45 min'),
+  (5, 'Wingspan', 'You are bird enthusiasts attempting to discover and attract the best birds to your network of wildlife preserves. Beautiful strategy game.', 59.99, 10, 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop', '1-5', 10, '40-70 min'),
+  (6, 'Azul', 'Tile-placement board game in which players compete for the highest score by placing tiles to decorate the walls of the Royal Palace of Evora.', 34.99, 20, 'https://images.unsplash.com/photo-1632501641765-e568d28b0015?q=80&w=800&auto=format&fit=crop', '2-4', 8, '30-45 min');
+
+-- ================================================
+-- Default Game Categories Mapping
+-- ================================================
+INSERT IGNORE INTO Game_Categories (game_id, category_id) VALUES
+  (1, 1), (1, 2),
+  (2, 2), (2, 1),
+  (3, 4), (3, 8),
+  (4, 3), (4, 1),
+  (5, 1), (5, 2),
+  (6, 1), (6, 2);
+
+-- ================================================
+-- Default Users (Password: "123456" bcrypt hashed)
+-- ================================================
+INSERT IGNORE INTO Users (id, name, email, password, role) VALUES
+  (1, 'Admin User', 'admin@boardgame.com', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeg6Lruj3vjPGga31lW', 'admin'),
+  (2, 'Demo User', 'user@boardgame.com', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeg6Lruj3vjPGga31lW', 'client');

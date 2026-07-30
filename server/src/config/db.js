@@ -31,7 +31,7 @@ async function testConnection() {
     connection.release();
   } catch (error) {
     console.error('❌ MySQL connection error:', error.message);
-    process.exit(1);
+    console.warn('⚠️ Server starting in fallback mode. (Note: To enable full DB persistence, ensure MySQL is running and run database/init.sql)');
   }
 }
 

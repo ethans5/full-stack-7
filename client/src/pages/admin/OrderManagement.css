@@ -5,7 +5,11 @@
 }
 
 .admin-order-card {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
 }
 
 .admin-order-header {
@@ -29,6 +33,7 @@
 .order-customer {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 .admin-order-items {
