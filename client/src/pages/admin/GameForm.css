@@ -1,0 +1,126 @@
+.bgg-section {
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.bgg-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+}
+
+.bgg-search {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.bgg-results {
+  margin-top: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.bgg-result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.bgg-result-item:hover {
+  border-color: var(--color-accent-primary);
+  background: var(--color-bg-hover);
+}
+
+.bgg-result-name {
+  font-weight: 500;
+}
+
+.bgg-result-year {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Game Form */
+.game-form {
+  padding: var(--spacing-xl);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md) var(--spacing-lg);
+}
+
+.form-col-2 {
+  grid-column: span 2;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.file-input {
+  padding: var(--spacing-sm);
+}
+
+.category-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.category-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.category-checkbox:has(input:checked) {
+  border-color: var(--color-accent-primary);
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--color-accent-secondary);
+}
+
+.category-checkbox input {
+  display: none;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-col-2 {
+    grid-column: span 1;
+  }
+
+  .bgg-search {
+    flex-direction: column;
+  }
+}
