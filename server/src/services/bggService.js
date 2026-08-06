@@ -14,12 +14,19 @@ const BggService = {
    * Returns a list of matching games with basic info
    */
   async searchByName(query) {
-    const response = await axios.get(`${BGG_API_BASE}/search`, {
+    const config = {
       params: {
         query,
         type: 'boardgame',
       },
-    });
+      headers: {},
+    };
+
+    if (process.env.BGG_API_TOKEN) {
+      config.headers.Authorization = `Bearer ${process.env.BGG_API_TOKEN}`;
+    }
+
+    const response = await axios.get(`${BGG_API_BASE}/search`, config);
 
     const result = await xml2js.parseStringPromise(response.data, {
       explicitArray: false,
@@ -47,12 +54,19 @@ const BggService = {
    * Returns structured data to auto-fill the admin game form
    */
   async getGameDetails(bggId) {
-    const response = await axios.get(`${BGG_API_BASE}/thing`, {
+    const config = {
       params: {
         id: bggId,
         stats: 1,
       },
-    });
+      headers: {},
+    };
+
+    if (process.env.BGG_API_TOKEN) {
+      config.headers.Authorization = `Bearer ${process.env.BGG_API_TOKEN}`;
+    }
+
+    const response = await axios.get(`${BGG_API_BASE}/thing`, config);
 
     const result = await xml2js.parseStringPromise(response.data, {
       explicitArray: false,
