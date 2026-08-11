@@ -5,7 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -21,5 +22,10 @@
     "mysql2": "^3.23.2",
     "stripe": "^22.4.0",
     "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^2.1.0",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }

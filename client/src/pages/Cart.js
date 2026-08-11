@@ -54,7 +54,7 @@ export default function Cart() {
                 <div className="cart-item-image-wrapper">
                   {item.image_url ? (
                     <img
-                      src={`${API_BASE}${item.image_url}`}
+                      src={item.image_url.startsWith('http') ? item.image_url : `${API_BASE}${item.image_url}`}
                       alt={item.title}
                       className="cart-item-image"
                     />

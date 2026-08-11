@@ -35,16 +35,18 @@ CREATE TABLE IF NOT EXISTS Categories (
 -- ================================================
 CREATE TABLE IF NOT EXISTS Games (
   id             INT            AUTO_INCREMENT PRIMARY KEY,
+  bgg_id         INT            NULL,         -- ID unique BoardGameGeek
   title          VARCHAR(255)   NOT NULL,
   description    TEXT           NULL,
   price          DECIMAL(10, 2) NOT NULL,
   stock_quantity INT            NOT NULL DEFAULT 0,
   image_url      VARCHAR(500)   NULL,
   rules_pdf_url  VARCHAR(500)   NULL,
-  player_count   VARCHAR(50)    NULL,     -- e.g. "2-4"
+  player_count   VARCHAR(50)    NULL,     
   min_age        INT            NULL,
-  play_duration  VARCHAR(50)    NULL,     -- e.g. "30-60 min"
-  created_at     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP
+  play_duration  VARCHAR(50)    NULL,     
+  created_at     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_bgg_id (bgg_id)           -- Contrainte unique pour éviter les doublons BGG
 ) ENGINE=InnoDB;
 
 -- ================================================

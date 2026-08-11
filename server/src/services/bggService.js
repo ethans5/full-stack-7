@@ -102,6 +102,59 @@ const BggService = {
       bgg_rating: item.statistics?.ratings?.average?.$.value || null,
     };
   },
+
+  /**
+   * Import or update a game from BGG into the local database
+   */
+  async importGameToDB(bggId, dbConnection) {
+    try {
+      // 1. Fetch game details from BGG API
+      const gameDetails = await this.getGameDetails(bggId);
+
+      // 2. Default values for shop-specific fields not provided by BGG
+      const defaultPrice = 49.99;
+      const defaultStock = 10;
+
+      // 3. Prepare SQL query with ON DUPLICATE KEY UPDATE
+      const query = `
+        INSERT INTO Games (
+          bgg_id, title, description, price, stock_quantity, 
+          image_url, player_count, min_age, play_duration
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          title = VALUES(title),
+          description = VALUES(description),
+          image_url = VALUES(image_url),
+          player_count = VALUES(player_count),
+          min_age = VALUES(min_age),
+          play_duration = VALUES(play_duration);
+      `;
+
+      // 4. Execute query
+      const [result] = await dbConnection.execute(query, [
+        bggId,
+        gameDetails.title,
+        gameDetails.description,
+        defaultPrice,
+        defaultStock,
+        gameDetails.image_url,
+        gameDetails.player_count,
+        gameDetails.min_age,
+        gameDetails.play_duration
+      ]);
+
+      return {
+        success: true,
+        message: result.affectedRows === 1 ? 'Game inserted successfully' : 'Game updated successfully',
+        gameData: gameDetails
+      };
+
+    } catch (error) {
+      console.error(`[importGameToDB] Erreur lors de l'importation du jeu BGG ID ${bggId}:`, error.message);
+      throw error;
+    }
+  }
 };
 
 module.exports = BggService;

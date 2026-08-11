@@ -53,7 +53,9 @@ export default function GameDetail() {
     );
   }
 
-  const imageUrl = game.image_url ? `${API_BASE}${game.image_url}` : null;
+  const imageUrl = game.image_url
+    ? (game.image_url.startsWith('http') ? game.image_url : `${API_BASE}${game.image_url}`)
+    : null;
 
   return (
     <div className="game-detail-page page">

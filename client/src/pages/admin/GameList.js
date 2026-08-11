@@ -89,7 +89,10 @@ export default function GameList() {
                     <td>
                       <div className="admin-game-thumb">
                         {game.image_url ? (
-                          <img src={`${API_BASE}${game.image_url}`} alt={game.title} />
+                          <img 
+                            src={game.image_url.startsWith('http') ? game.image_url : `${API_BASE}${game.image_url}`} 
+                            alt={game.title} 
+                          />
                         ) : (
                           <span>🎲</span>
                         )}

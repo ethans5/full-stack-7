@@ -6,7 +6,7 @@ const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
 
 export default function GameCard({ game }) {
   const imageUrl = game.image_url
-    ? `${API_BASE}${game.image_url}`
+    ? (game.image_url.startsWith('http') ? game.image_url : `${API_BASE}${game.image_url}`)
     : null;
 
   return (

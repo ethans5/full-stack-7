@@ -70,7 +70,7 @@ const GameController = {
         stock_quantity: parseInt(req.body.stock_quantity) || 0,
         image_url: req.files?.image?.[0]
           ? `/uploads/images/${req.files.image[0].filename}`
-          : null,
+          : req.body.image_url || null,
         rules_pdf_url: req.files?.rules_pdf?.[0]
           ? `/uploads/pdfs/${req.files.rules_pdf[0].filename}`
           : null,
@@ -133,6 +133,8 @@ const GameController = {
       // Handle file uploads (only update if new file is provided)
       if (req.files?.image?.[0]) {
         gameData.image_url = `/uploads/images/${req.files.image[0].filename}`;
+      } else if (req.body.image_url !== undefined) {
+        gameData.image_url = req.body.image_url;
       }
       if (req.files?.rules_pdf?.[0]) {
         gameData.rules_pdf_url = `/uploads/pdfs/${req.files.rules_pdf[0].filename}`;

@@ -31,6 +31,7 @@ export default function GameForm() {
     min_age: '',
     play_duration: '',
     category_ids: [],
+    image_url: '',
   });
   const [imageFile, setImageFile] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
@@ -70,6 +71,7 @@ export default function GameForm() {
             min_age: game.min_age || '',
             play_duration: game.play_duration || '',
             category_ids: game.categories?.map((c) => c.id) || [],
+            image_url: game.image_url || '',
           });
         }
       } catch (error) {
@@ -119,6 +121,7 @@ export default function GameForm() {
           player_count: game.player_count || prev.player_count,
           min_age: game.min_age || prev.min_age,
           play_duration: game.play_duration || prev.play_duration,
+          image_url: game.image_url || prev.image_url,
         }));
 
         setBggResults([]);
@@ -158,6 +161,7 @@ export default function GameForm() {
     formData.append('category_ids', JSON.stringify(form.category_ids));
 
     if (imageFile) formData.append('image', imageFile);
+    if (form.image_url) formData.append('image_url', form.image_url);
     if (pdfFile) formData.append('rules_pdf', pdfFile);
 
     try {
@@ -340,12 +344,25 @@ export default function GameForm() {
             {/* File uploads */}
             <div className="form-group">
               <label htmlFor="game-image" className="form-label">Box Image (JPEG/PNG)</label>
+              {form.image_url && (
+                <div className="image-preview" style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <img
+                    src={form.image_url.startsWith('http') ? form.image_url : `${API_URL.replace('/api', '')}${form.image_url}`}
+                    alt="Preview"
+                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--border-color, #ccc)' }}
+                  />
+                  <span style={{ fontSize: '13px', color: '#aaa' }}>Current Image / BGG Auto-filled</span>
+                </div>
+              )}
               <input
                 id="game-image"
                 type="file"
                 className="input file-input"
                 accept="image/jpeg,image/png"
-                onChange={(e) => setImageFile(e.target.files[0])}
+                onChange={(e) => {
+                  setImageFile(e.target.files[0]);
+                  setForm(prev => ({ ...prev, image_url: '' }));
+                }}
               />
             </div>
 

@@ -4,3 +4,9 @@ server/node_modules/
 .env
 .DS_Store
 server/uploads/
+
+# Tests
+tests-e2e/
+server/tests/
+playwright-report/
+test-results/
