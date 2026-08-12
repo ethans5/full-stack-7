@@ -7,32 +7,51 @@ export const CartContext = createContext(null);
 
 /**
  * Fournisseur de contexte pour le panier d'achats.
- * Gère l'état global du panier (articles, quantités, prix total) et sa persistance locale.
+ * Stocke le panier de façon isolée par utilisateur (`cart_user_<userId>`).
  */
 export function CartProvider({ children }) {
-  const { token, isAuthenticated } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
+
+  const getCartKey = (userId) => (userId ? `cart_user_${userId}` : null);
+
+  // Initialisation du panier : chargé depuis localStorage uniquement si l'utilisateur est connecté
   const [items, setItems] = useState(() => {
-    // Load cart from localStorage on mount
-    const saved = localStorage.getItem('cart');
-    return saved ? JSON.parse(saved) : [];
+    if (!user?.id) return [];
+    const saved = localStorage.getItem(getCartKey(user.id));
+    try {
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
   });
 
-  // Persist cart to localStorage
+  // Recharger le panier lorsque l'utilisateur change (connexion / déconnexion)
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
-
-  // Clear cart on logout
-  useEffect(() => {
-    if (!isAuthenticated) {
-      // Keep cart in localStorage but it will be validated on checkout
+    if (user?.id) {
+      const saved = localStorage.getItem(getCartKey(user.id));
+      try {
+        setItems(saved ? JSON.parse(saved) : []);
+      } catch (e) {
+        setItems([]);
+      }
+    } else {
+      setItems([]);
     }
-  }, [isAuthenticated]);
+  }, [user?.id]);
+
+  // Sauvegarder automatiquement les modifications du panier pour l'utilisateur connecté
+  useEffect(() => {
+    if (user?.id) {
+      localStorage.setItem(getCartKey(user.id), JSON.stringify(items));
+    }
+  }, [items, user?.id]);
 
   /**
    * Ajoute un jeu au panier ou incrémente sa quantité s'il y est déjà.
    */
   const addItem = (game, quantity = 1) => {
+    if (!user?.id) return;
+
     setItems((prev) => {
       const existing = prev.find((item) => item.game_id === game.id);
       if (existing) {
@@ -58,7 +77,6 @@ export function CartProvider({ children }) {
 
   /**
    * Met à jour la quantité d'un article spécifique dans le panier.
-   * Si la quantité tombe à zéro ou moins, l'article est supprimé.
    */
   const updateQuantity = (gameId, quantity) => {
     if (quantity <= 0) {
@@ -80,16 +98,19 @@ export function CartProvider({ children }) {
   };
 
   /**
-   * Vide l'intégralité du panier et nettoie le stockage local.
+   * Vide l'intégralité du panier de l'utilisateur actif.
    */
   const clearCart = () => {
     setItems([]);
+    if (user?.id) {
+      localStorage.removeItem(getCartKey(user.id));
+    }
+    localStorage.removeItem('cart_guest');
     localStorage.removeItem('cart');
   };
 
   /**
    * Déclenche le processus de paiement (checkout).
-   * Envoie le contenu du panier à l'API et retourne l'URL de la session Stripe.
    */
   const checkout = async () => {
     const cartItems = items.map((item) => ({
