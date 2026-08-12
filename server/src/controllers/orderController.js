@@ -9,8 +9,8 @@ const StripeService = require('../services/stripeService');
 const OrderController = {
   /**
    * POST /api/orders/checkout
-   * Create an order and a Stripe Checkout session
-   * Body: { items: [{ game_id, quantity }] }
+   * Crée une nouvelle commande en base et génère une session de paiement Stripe Checkout.
+   * Accepte une liste d'articles (game_id, quantity) dans le corps de la requête.
    */
   async checkout(req, res, next) {
     try {
@@ -66,8 +66,8 @@ const OrderController = {
 
   /**
    * POST /api/orders/webhook
-   * Stripe webhook — validates payment and deducts stock
-   * Body must be raw (not JSON parsed) for signature verification
+   * Point de terminaison (webhook) appelé par Stripe lors d'événements (ex: paiement validé).
+   * Le corps de la requête doit être brut pour permettre la vérification de la signature cryptographique.
    */
   async webhook(req, res, next) {
     try {
@@ -97,8 +97,42 @@ const OrderController = {
   },
 
   /**
+   * POST /api/orders/confirm-session
+   * Vérifie directement auprès de Stripe qu'une session de paiement est payée et valide la commande.
+   * Sert de mécanisme de confirmation immédiat (fallback si le webhook prend du temps ou en dev local).
+   */
+  async confirmSession(req, res, next) {
+    try {
+      const { session_id } = req.body;
+      if (!session_id) {
+        return res.status(400).json({
+          success: false,
+          message: 'Session ID is required.',
+        });
+      }
+
+      const session = await StripeService.retrieveCheckoutSession(session_id);
+      if (session && (session.payment_status === 'paid' || session.status === 'complete')) {
+        const order = await OrderService.confirmPayment(session_id);
+        return res.json({
+          success: true,
+          message: 'Payment confirmed successfully.',
+          data: { order },
+        });
+      }
+
+      res.status(400).json({
+        success: false,
+        message: 'Payment has not been completed on Stripe.',
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
    * GET /api/orders/my-orders
-   * Get all orders for the current user
+   * Récupère l'historique de toutes les commandes passées par l'utilisateur connecté.
    */
   async getMyOrders(req, res, next) {
     try {
@@ -115,7 +149,7 @@ const OrderController = {
 
   /**
    * GET /api/orders/:id
-   * Get a single order by ID
+   * Récupère les détails d'une commande spécifique via son ID.
    */
   async getById(req, res, next) {
     try {
@@ -142,8 +176,8 @@ const OrderController = {
 
   /**
    * GET /api/orders
-   * Get all orders (admin only)
-   * Query params: status (optional filter)
+   * Récupère toutes les commandes de tous les utilisateurs (réservé aux administrateurs).
+   * Permet de filtrer optionnellement par statut.
    */
   async getAll(req, res, next) {
     try {
@@ -160,8 +194,7 @@ const OrderController = {
 
   /**
    * PATCH /api/orders/:id/status
-   * Update order status (admin only)
-   * Body: { status: 'pending' | 'paid' | 'shipped' }
+   * Met à jour le statut (ex: pending, paid, shipped) d'une commande spécifique (réservé aux administrateurs).
    */
   async updateStatus(req, res, next) {
     try {

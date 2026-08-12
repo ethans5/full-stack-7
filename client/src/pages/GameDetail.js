@@ -2,11 +2,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
-import './GameDetail.css';
+import '../styles/GameDetail.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
 
+/**
+ * Composant affichant la fiche détaillée d'un jeu spécifique.
+ * Récupère les données du jeu via l'API, permet de choisir la quantité
+ * et d'ajouter l'article au panier si l'utilisateur est connecté.
+ */
 export default function GameDetail() {
   const { id } = useParams();
   const { addItem } = useContext(CartContext);
@@ -33,6 +38,10 @@ export default function GameDetail() {
     fetchGame();
   }, [id]);
 
+  /**
+   * Gère l'ajout du jeu courant au panier.
+   * Déclenche une petite animation visuelle temporaire ('✓ Added!').
+   */
   const handleAddToCart = () => {
     if (game) {
       addItem(game, quantity);

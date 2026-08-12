@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './OrderHistory.css';
+import '../styles/OrderHistory.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+/**
+ * Composant affichant l'historique des commandes de l'utilisateur connecté.
+ * Affiche chaque commande avec sa date, son statut, son total et les jeux achetés.
+ */
 export default function OrderHistory() {
   const { token } = useAuth();
   const [orders, setOrders] = useState([]);
@@ -29,6 +33,9 @@ export default function OrderHistory() {
     fetchOrders();
   }, [token]);
 
+  /**
+   * Retourne la classe CSS correspondante au badge de statut d'une commande.
+   */
   const getStatusBadge = (status) => {
     const map = {
       pending: 'badge-warning',
@@ -60,7 +67,7 @@ export default function OrderHistory() {
               <div key={order.id} className="order-card glass fade-in">
                 <div className="order-header">
                   <div>
-                    <span className="order-id">Order #{order.id}</span>
+                    <span className="order-id">Order #{order.user_order_number || order.id}</span>
                     <span className="order-date">
                       {new Date(order.created_at).toLocaleDateString('en-US', {
                         year: 'numeric', month: 'long', day: 'numeric',

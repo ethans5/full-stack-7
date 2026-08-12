@@ -6,15 +6,15 @@ const GameModel = require('../models/gameModel');
 
 const GameService = {
   /**
-   * Get all games with optional filters
+   * Récupère la liste de tous les jeux, avec l'application éventuelle de filtres de recherche.
    */
   async getAllGames(filters) {
     return await GameModel.findAll(filters);
   },
 
   /**
-   * Get a single game by ID
-   * Throws 404 if not found
+   * Récupère les détails complets d'un jeu par son ID.
+   * Lève une exception 404 si le jeu n'est pas trouvé dans la base.
    */
   async getGameById(id) {
     const game = await GameModel.findById(id);
@@ -27,7 +27,8 @@ const GameService = {
   },
 
   /**
-   * Create a new game with optional category associations
+   * Crée un nouveau jeu dans la base et lui associe des catégories s'il y en a.
+   * Retourne ensuite les données complètes du jeu fraîchement créé.
    */
   async createGame(gameData, categoryIds = []) {
     const game = await GameModel.create(gameData);
@@ -42,7 +43,8 @@ const GameService = {
   },
 
   /**
-   * Update an existing game
+   * Met à jour les informations d'un jeu existant en conservant les anciennes valeurs si elles ne sont pas modifiées.
+   * Remplace également les catégories associées si un nouveau tableau d'ID est fourni.
    */
   async updateGame(id, gameData, categoryIds = null) {
     // Check game exists
@@ -77,7 +79,7 @@ const GameService = {
   },
 
   /**
-   * Delete a game
+   * Supprime définitivement un jeu de la base de données.
    */
   async deleteGame(id) {
     const game = await GameModel.findById(id);

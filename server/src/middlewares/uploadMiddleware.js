@@ -9,6 +9,9 @@ const path = require('path');
 // ---- Storage configuration ----
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    /**
+     * Détermine le dossier de destination en fonction du nom du champ (image ou rules_pdf).
+     */
     if (file.fieldname === 'image') {
       cb(null, path.join(__dirname, '..', '..', 'uploads', 'images'));
     } else if (file.fieldname === 'rules_pdf') {
@@ -18,6 +21,9 @@ const storage = multer.diskStorage({
     }
   },
   filename: (req, file, cb) => {
+    /**
+     * Génère un nom de fichier unique basé sur le timestamp et un nombre aléatoire.
+     */
     // Generate unique filename: timestamp-originalname
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname);
@@ -26,6 +32,12 @@ const storage = multer.diskStorage({
 });
 
 // ---- File filter ----
+/**
+ * Filtre les fichiers uploadés pour n'accepter que certains types MIME.
+ * @param {Object} req - La requête courante
+ * @param {Object} file - Le fichier en cours d'upload
+ * @param {Function} cb - Le callback à appeler avec le résultat
+ */
 const fileFilter = (req, file, cb) => {
   const allowedImageTypes = ['image/jpeg', 'image/png'];
   const allowedPdfTypes = ['application/pdf'];

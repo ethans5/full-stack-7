@@ -1,9 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './GameCard.css';
+import '../styles/GameCard.css';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
 
+/**
+ * Composant affichant une carte individuelle pour un jeu de société.
+ * Présente l'image, le titre, les caractéristiques (joueurs, âge, durée), le prix et le stock.
+ * Cliquable pour rediriger vers la page de détails du jeu.
+ */
 export default function GameCard({ game }) {
   const imageUrl = game.image_url
     ? (game.image_url.startsWith('http') ? game.image_url : `${API_BASE}${game.image_url}`)

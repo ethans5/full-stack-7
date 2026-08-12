@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './Login.css';
+import '../styles/Login.css';
 
+/**
+ * Composant de la page d'inscription.
+ * Permet à un nouvel utilisateur de créer un compte avec validation des données côté client
+ * avant l'envoi à l'API.
+ */
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,6 +18,10 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  /**
+   * Gère la soumission du formulaire d'inscription.
+   * Vérifie le format de l'email et la correspondance des mots de passe.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

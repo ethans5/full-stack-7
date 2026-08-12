@@ -10,8 +10,8 @@ const BGG_API_BASE = 'https://boardgamegeek.com/xmlapi2';
 
 const BggService = {
   /**
-   * Search for a board game by name on BGG
-   * Returns a list of matching games with basic info
+   * Effectue une recherche sur l'API externe BoardGameGeek (BGG) pour trouver un jeu par son nom.
+   * Parse la réponse XML en JSON et la formate en un tableau d'objets simplifiés.
    */
   async searchByName(query) {
     const config = {
@@ -50,8 +50,8 @@ const BggService = {
   },
 
   /**
-   * Get detailed game info from BGG by its BGG ID
-   * Returns structured data to auto-fill the admin game form
+   * Récupère toutes les données d'un jeu spécifique via son ID BGG (description, âge, durée, image, etc.).
+   * Ces données structurées serviront au remplissage automatique du formulaire côté admin.
    */
   async getGameDetails(bggId) {
     const config = {
@@ -104,7 +104,8 @@ const BggService = {
   },
 
   /**
-   * Import or update a game from BGG into the local database
+   * Importe un jeu complet (infos BGG + valeurs par défaut de la boutique) dans la base de données.
+   * Met à jour les informations du jeu s'il existe déjà dans la base.
    */
   async importGameToDB(bggId, dbConnection) {
     try {

@@ -6,8 +6,8 @@ const { pool } = require('../config/db');
 
 const UserModel = {
   /**
-   * Find a user by email
-   * Used for login and duplicate-check during registration
+   * Cherche un utilisateur en base de données par son adresse email.
+   * Utilisé lors de la connexion ou pour vérifier si un email est déjà pris à l'inscription.
    */
   async findByEmail(email) {
     const [rows] = await pool.execute(
@@ -18,8 +18,8 @@ const UserModel = {
   },
 
   /**
-   * Find a user by ID
-   * Used for JWT token verification (authMiddleware)
+   * Cherche un utilisateur par son identifiant unique.
+   * Essentiellement utilisé lors de la vérification du token JWT par le middleware d'authentification.
    */
   async findById(id) {
     const [rows] = await pool.execute(
@@ -30,8 +30,8 @@ const UserModel = {
   },
 
   /**
-   * Create a new user
-   * Password must be hashed BEFORE calling this method
+   * Insère un nouvel utilisateur dans la base de données.
+   * Le mot de passe fourni doit impérativement être hashé en amont.
    */
   async create({ name, email, password, role = 'client' }) {
     const [result] = await pool.execute(
@@ -42,8 +42,8 @@ const UserModel = {
   },
 
   /**
-   * Get all users (admin only)
-   * Excludes password hash for security
+   * Récupère la liste de tous les utilisateurs (fonctionnalité d'administration).
+   * Le hash du mot de passe est volontairement exclu de la requête par mesure de sécurité.
    */
   async findAll() {
     const [rows] = await pool.execute(

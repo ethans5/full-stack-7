@@ -14,6 +14,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), OrderControll
 
 // Authenticated user routes
 router.post('/checkout', authMiddleware, OrderController.checkout);
+router.post('/confirm-session', authMiddleware, OrderController.confirmSession);
 router.get('/my-orders', authMiddleware, OrderController.getMyOrders);
 router.get('/:id', authMiddleware, OrderController.getById);
 

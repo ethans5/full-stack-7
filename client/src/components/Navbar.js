@@ -2,14 +2,23 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
-import './Navbar.css';
+import '../styles/Navbar.css';
 
+/**
+ * Composant de navigation principal (barre de navigation).
+ * Gère l'affichage dynamique des liens selon l'état d'authentification (visiteur, client, admin)
+ * et le nombre d'articles dans le panier.
+ */
 export default function Navbar() {
   const { user, isAuthenticated, isAdmin, logout } = useContext(AuthContext);
   const { totalItems } = useContext(CartContext);
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  /**
+   * Gère la déconnexion de l'utilisateur.
+   * Vide la session, redirige vers l'accueil et ferme le menu mobile.
+   */
   const handleLogout = () => {
     logout();
     navigate('/');

@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './Login.css';
+import '../styles/Login.css';
 
+/**
+ * Composant de la page de connexion.
+ * Contient un formulaire pour saisir son email et mot de passe,
+ * et utilise le hook d'authentification pour se connecter.
+ */
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,6 +16,10 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  /**
+   * Gère la soumission du formulaire de connexion.
+   * Redirige vers la page d'accueil en cas de succès, sinon affiche un message d'erreur.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

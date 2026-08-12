@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import GameCard from '../components/GameCard';
-import './Home.css';
+import '../styles/Home.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+/**
+ * Composant de la page d'accueil (Home).
+ * Affiche le catalogue de jeux avec un système de filtres (recherche textuelle, catégorie, tris).
+ * Gère le chargement asynchrone des données depuis l'API.
+ */
 export default function Home() {
   const [games, setGames] = useState([]);
   const [categories, setCategories] = useState([]);

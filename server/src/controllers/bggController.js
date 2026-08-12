@@ -7,7 +7,7 @@ const BggService = require('../services/bggService');
 const BggController = {
   /**
    * GET /api/bgg/search?query=catan
-   * Search for a board game on BGG by name
+   * Recherche un jeu de société sur l'API externe BoardGameGeek (BGG) par son nom.
    */
   async search(req, res, next) {
     try {
@@ -33,7 +33,7 @@ const BggController = {
 
   /**
    * GET /api/bgg/game/:bggId
-   * Get detailed game info from BGG to auto-fill the admin form
+   * Récupère les détails complets d'un jeu spécifique depuis l'API BGG (utile pour pré-remplir le formulaire admin).
    */
   async getDetails(req, res, next) {
     try {

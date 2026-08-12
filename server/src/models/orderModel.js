@@ -6,8 +6,8 @@ const { pool } = require('../config/db');
 
 const OrderModel = {
   /**
-   * Create a new order with its items inside a transaction
-   * Returns the created order ID
+   * Crée une nouvelle commande et ses lignes d'articles associées au sein d'une transaction SQL.
+   * Retourne l'ID de la commande générée.
    */
   async create({ user_id, total_price, items, stripe_session_id = null }) {
     const connection = await pool.getConnection();
@@ -42,7 +42,7 @@ const OrderModel = {
   },
 
   /**
-   * Find an order by ID with its items
+   * Exécute des requêtes SQL pour récupérer une commande par ID et tous les articles qui la composent.
    */
   async findById(id) {
     const [orders] = await pool.execute(
@@ -63,15 +63,26 @@ const OrderModel = {
   },
 
   /**
-   * Find all orders for a specific user
+   * Récupère l'historique complet des commandes d'un utilisateur spécifique, en incluant les articles pour chacune.
    */
   async findByUserId(userId) {
+    // 1. Fetch completed/paid/shipped orders in chronological order
     const [orders] = await pool.execute(
-      'SELECT * FROM Orders WHERE user_id = ? ORDER BY created_at DESC',
+      `SELECT * FROM Orders 
+       WHERE user_id = ? AND status != 'pending' 
+       ORDER BY created_at ASC`,
       [userId]
     );
 
-    // Attach items to each order
+    // 2. Assign user-relative order number (Order #1, Order #2...)
+    orders.forEach((order, index) => {
+      order.user_order_number = index + 1;
+    });
+
+    // 3. Sort newest first for user display
+    orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    // 4. Attach items to each order
     for (const order of orders) {
       const [items] = await pool.execute(
         `SELECT oi.*, g.title, g.image_url
@@ -87,7 +98,8 @@ const OrderModel = {
   },
 
   /**
-   * Find all orders (admin) with optional status filter
+   * Récupère toutes les commandes existantes dans le système (vue admin), avec filtre optionnel par statut.
+   * Inclut également le nom et l'email de l'utilisateur acheteur.
    */
   async findAll(statusFilter = null) {
     let query = `
@@ -122,8 +134,8 @@ const OrderModel = {
   },
 
   /**
-   * Find an order by Stripe session ID
-   * Used in the webhook to match payment confirmation to order
+   * Recherche une commande grâce à l'ID de session Stripe.
+   * Principalement utilisé par le webhook pour retrouver la commande après paiement.
    */
   async findByStripeSessionId(sessionId) {
     const [rows] = await pool.execute(
@@ -134,7 +146,7 @@ const OrderModel = {
   },
 
   /**
-   * Update order status (e.g. pending → paid → shipped)
+   * Met à jour uniquement le statut (ex: 'paid', 'shipped') d'une commande spécifique.
    */
   async updateStatus(id, status) {
     const [result] = await pool.execute(
@@ -145,8 +157,8 @@ const OrderModel = {
   },
 
   /**
-   * Mark order as paid and deduct stock in a single transaction
-   * Called from the Stripe webhook after successful payment
+   * Marque une commande comme payée et déduit le stock des jeux correspondants dans une seule transaction sécurisée.
+   * Si le stock est insuffisant, la transaction est annulée.
    */
   async confirmPayment(orderId) {
     const connection = await pool.getConnection();

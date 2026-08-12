@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import './GameForm.css';
+import '../../styles/GameForm.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+/**
+ * Composant de formulaire utilisé à la fois pour la création et la modification de jeux.
+ * Intègre la recherche sur l'API BoardGameGeek (BGG) pour pré-remplir les champs,
+ * ainsi que le téléchargement d'images et de fichiers PDF (règles).
+ */
 export default function GameForm() {
   const { id } = useParams();
   const isEditing = Boolean(id);
@@ -33,7 +38,6 @@ export default function GameForm() {
     category_ids: [],
     image_url: '',
   });
-  const [imageFile, setImageFile] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
 
   // Fetch categories on mount
@@ -81,7 +85,10 @@ export default function GameForm() {
     fetchGame();
   }, [id, isEditing]);
 
-  // BGG Search
+  /**
+   * Déclenche une recherche de jeux par nom sur l'API externe BGG
+   * et stocke les résultats pour affichage.
+   */
   const handleBggSearch = async () => {
     if (!bggQuery.trim()) return;
     setBggLoading(true);
@@ -103,7 +110,10 @@ export default function GameForm() {
     }
   };
 
-  // BGG Auto-fill
+  /**
+   * Récupère les détails complets du jeu sélectionné sur BGG
+   * et pré-remplit les champs du formulaire correspondants.
+   */
   const handleBggSelect = async (bggId) => {
     setBggLoading(true);
     try {
@@ -136,6 +146,10 @@ export default function GameForm() {
     }
   };
 
+  /**
+   * Bascule l'état (sélectionné / non sélectionné) d'une catégorie
+   * pour le jeu en cours d'édition.
+   */
   const handleCategoryToggle = (catId) => {
     setForm((prev) => ({
       ...prev,
@@ -145,6 +159,10 @@ export default function GameForm() {
     }));
   };
 
+  /**
+   * Soumet le formulaire à l'API (création ou mise à jour).
+   * Construit un objet FormData pour prendre en charge l'upload de fichiers (image, PDF).
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -160,7 +178,6 @@ export default function GameForm() {
     formData.append('play_duration', form.play_duration);
     formData.append('category_ids', JSON.stringify(form.category_ids));
 
-    if (imageFile) formData.append('image', imageFile);
     if (form.image_url) formData.append('image_url', form.image_url);
     if (pdfFile) formData.append('rules_pdf', pdfFile);
 
@@ -341,29 +358,23 @@ export default function GameForm() {
               </div>
             </div>
 
-            {/* File uploads */}
+            {/* Box Image preview (BGG Auto-filled) */}
             <div className="form-group">
-              <label htmlFor="game-image" className="form-label">Box Image (JPEG/PNG)</label>
-              {form.image_url && (
-                <div className="image-preview" style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <label className="form-label">Box Image</label>
+              {form.image_url ? (
+                <div className="image-preview" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img
                     src={form.image_url.startsWith('http') ? form.image_url : `${API_URL.replace('/api', '')}${form.image_url}`}
                     alt="Preview"
-                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--border-color, #ccc)' }}
+                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--color-border, #ccc)' }}
                   />
-                  <span style={{ fontSize: '13px', color: '#aaa' }}>Current Image / BGG Auto-filled</span>
+                  <span style={{ fontSize: '13px', color: 'var(--color-text-secondary, #aaa)' }}>BGG Auto-filled</span>
+                </div>
+              ) : (
+                <div style={{ fontSize: '13px', color: 'var(--color-text-muted, #888)', fontStyle: 'italic', padding: '10px 0' }}>
+                  No image set. Search BGG above to auto-fill game image.
                 </div>
               )}
-              <input
-                id="game-image"
-                type="file"
-                className="input file-input"
-                accept="image/jpeg,image/png"
-                onChange={(e) => {
-                  setImageFile(e.target.files[0]);
-                  setForm(prev => ({ ...prev, image_url: '' }));
-                }}
-              />
             </div>
 
             <div className="form-group">

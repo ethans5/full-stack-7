@@ -1,6 +1,10 @@
 import React from 'react';
-import './Footer.css';
+import '../styles/Footer.css';
 
+/**
+ * Composant représentant le pied de page (footer) de l'application.
+ * Affiche le logo, le nom du site et les droits d'auteur avec l'année en cours.
+ */
 export default function Footer() {
   return (
     <footer className="footer">

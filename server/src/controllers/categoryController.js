@@ -7,7 +7,7 @@ const CategoryService = require('../services/categoryService');
 const CategoryController = {
   /**
    * GET /api/categories
-   * Get all categories
+   * Récupère la liste de toutes les catégories de jeux.
    */
   async getAll(req, res, next) {
     try {
@@ -24,7 +24,7 @@ const CategoryController = {
 
   /**
    * GET /api/categories/:id
-   * Get a single category
+   * Récupère les détails d'une seule catégorie en fonction de son ID.
    */
   async getById(req, res, next) {
     try {
@@ -47,7 +47,7 @@ const CategoryController = {
 
   /**
    * POST /api/categories
-   * Create a new category (admin only)
+   * Crée une nouvelle catégorie (réservé aux administrateurs).
    */
   async create(req, res, next) {
     try {
@@ -80,7 +80,7 @@ const CategoryController = {
 
   /**
    * PUT /api/categories/:id
-   * Update a category (admin only)
+   * Met à jour une catégorie existante (réservé aux administrateurs).
    */
   async update(req, res, next) {
     try {
@@ -113,7 +113,7 @@ const CategoryController = {
 
   /**
    * DELETE /api/categories/:id
-   * Delete a category (admin only)
+   * Supprime une catégorie de la base de données (réservé aux administrateurs).
    */
   async delete(req, res, next) {
     try {

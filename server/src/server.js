@@ -93,6 +93,10 @@ app.use((err, req, res, next) => {
 // Start Server
 // ================================================
 
+/**
+ * Démarre le serveur Express après avoir vérifié la connexion à la base de données MySQL.
+ * Configure également le port d'écoute et affiche les routes disponibles.
+ */
 async function startServer() {
   // Verify MySQL connection before starting
   await testConnection();

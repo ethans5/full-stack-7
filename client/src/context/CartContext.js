@@ -5,6 +5,10 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export const CartContext = createContext(null);
 
+/**
+ * Fournisseur de contexte pour le panier d'achats.
+ * Gère l'état global du panier (articles, quantités, prix total) et sa persistance locale.
+ */
 export function CartProvider({ children }) {
   const { token, isAuthenticated } = useContext(AuthContext);
   const [items, setItems] = useState(() => {
@@ -25,6 +29,9 @@ export function CartProvider({ children }) {
     }
   }, [isAuthenticated]);
 
+  /**
+   * Ajoute un jeu au panier ou incrémente sa quantité s'il y est déjà.
+   */
   const addItem = (game, quantity = 1) => {
     setItems((prev) => {
       const existing = prev.find((item) => item.game_id === game.id);
@@ -49,6 +56,10 @@ export function CartProvider({ children }) {
     });
   };
 
+  /**
+   * Met à jour la quantité d'un article spécifique dans le panier.
+   * Si la quantité tombe à zéro ou moins, l'article est supprimé.
+   */
   const updateQuantity = (gameId, quantity) => {
     if (quantity <= 0) {
       removeItem(gameId);
@@ -61,15 +72,25 @@ export function CartProvider({ children }) {
     );
   };
 
+  /**
+   * Supprime complètement un article du panier via son ID de jeu.
+   */
   const removeItem = (gameId) => {
     setItems((prev) => prev.filter((item) => item.game_id !== gameId));
   };
 
+  /**
+   * Vide l'intégralité du panier et nettoie le stockage local.
+   */
   const clearCart = () => {
     setItems([]);
     localStorage.removeItem('cart');
   };
 
+  /**
+   * Déclenche le processus de paiement (checkout).
+   * Envoie le contenu du panier à l'API et retourne l'URL de la session Stripe.
+   */
   const checkout = async () => {
     const cartItems = items.map((item) => ({
       game_id: item.game_id,

@@ -6,6 +6,13 @@
 const AuthService = require('../services/authService');
 const UserModel = require('../models/userModel');
 
+/**
+ * Middleware d'authentification vérifiant la validité du token JWT fourni dans l'en-tête Authorization.
+ * Si le token est valide, l'utilisateur correspondant est rattaché à l'objet requête (req.user).
+ * @param {Object} req - L'objet de requête Express
+ * @param {Object} res - L'objet de réponse Express
+ * @param {Function} next - La fonction pour passer au middleware suivant
+ */
 async function authMiddleware(req, res, next) {
   try {
     // Extract token from Authorization header

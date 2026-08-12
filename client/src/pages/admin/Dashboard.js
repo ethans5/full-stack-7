@@ -1,7 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Dashboard.css';
+import '../../styles/Dashboard.css';
 
+/**
+ * Composant principal du tableau de bord administrateur (Dashboard).
+ * Offre une vue d'ensemble avec des raccourcis vers la gestion des jeux,
+ * l'ajout de nouveaux jeux et la gestion des commandes.
+ */
 export default function Dashboard() {
   return (
     <div className="admin-dashboard page">

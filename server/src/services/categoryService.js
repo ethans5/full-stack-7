@@ -6,14 +6,14 @@ const CategoryModel = require('../models/categoryModel');
 
 const CategoryService = {
   /**
-   * Get all categories
+   * Récupère la liste de toutes les catégories.
    */
   async getAllCategories() {
     return await CategoryModel.findAll();
   },
 
   /**
-   * Get a category by ID
+   * Récupère une seule catégorie par son ID. Lève une erreur 404 si elle n'existe pas.
    */
   async getCategoryById(id) {
     const category = await CategoryModel.findById(id);
@@ -26,14 +26,14 @@ const CategoryService = {
   },
 
   /**
-   * Create a new category
+   * Crée une nouvelle catégorie et retourne la catégorie nouvellement créée avec son ID.
    */
   async createCategory(name) {
     return await CategoryModel.create(name);
   },
 
   /**
-   * Update a category
+   * Met à jour le nom d'une catégorie. Vérifie d'abord que la catégorie existe (sinon 404).
    */
   async updateCategory(id, name) {
     const category = await CategoryModel.findById(id);
@@ -48,7 +48,7 @@ const CategoryService = {
   },
 
   /**
-   * Delete a category
+   * Supprime une catégorie. Vérifie sa présence au préalable.
    */
   async deleteCategory(id) {
     const category = await CategoryModel.findById(id);

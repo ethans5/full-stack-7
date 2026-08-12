@@ -12,8 +12,8 @@ const isValidEmail = (email) => {
 
 const StripeService = {
   /**
-   * Create a Stripe Checkout session
-   * Generates a payment URL that the client redirects to
+   * Crée une session de paiement hébergée sur Stripe Checkout.
+   * Construit la liste des articles formatée pour Stripe et génère l'URL de redirection sécurisée pour le client.
    */
   async createCheckoutSession({ orderId, items, customerEmail }) {
     const stripe = getStripe();
@@ -68,8 +68,16 @@ const StripeService = {
   },
 
   /**
-   * Verify Stripe webhook signature
-   * Returns the verified event or throws if the signature is invalid
+   * Récupère une session Stripe Checkout via son ID.
+   */
+  async retrieveCheckoutSession(sessionId) {
+    const stripe = getStripe();
+    return await stripe.checkout.sessions.retrieve(sessionId);
+  },
+
+  /**
+   * Vérifie la signature cryptographique du webhook Stripe.
+   * C'est une étape de sécurité cruciale pour s'assurer que l'événement de paiement provient bien de Stripe.
    */
   constructEvent(rawBody, signature) {
     const stripe = getStripe();

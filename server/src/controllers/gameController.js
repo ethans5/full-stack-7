@@ -7,8 +7,7 @@ const GameService = require('../services/gameService');
 const GameController = {
   /**
    * GET /api/games
-   * Get all games with optional filters
-   * Query params: search, category_id, min_price, max_price, min_age, sort_by, sort_order
+   * Récupère la liste des jeux avec des filtres optionnels (recherche, catégorie, prix, âge, tri).
    */
   async getAll(req, res, next) {
     try {
@@ -35,7 +34,7 @@ const GameController = {
 
   /**
    * GET /api/games/:id
-   * Get a single game by ID (includes categories)
+   * Récupère les informations détaillées d'un jeu spécifique par son ID (incluant ses catégories associées).
    */
   async getById(req, res, next) {
     try {
@@ -58,8 +57,8 @@ const GameController = {
 
   /**
    * POST /api/games
-   * Create a new game (admin only)
-   * Accepts multipart/form-data with image and rules_pdf files
+   * Crée un nouveau jeu dans le catalogue (réservé aux administrateurs).
+   * Gère l'upload de l'image de couverture et du fichier PDF des règles via multipart/form-data.
    */
   async create(req, res, next) {
     try {
@@ -113,8 +112,8 @@ const GameController = {
 
   /**
    * PUT /api/games/:id
-   * Update a game (admin only)
-   * Accepts multipart/form-data with optional image and rules_pdf files
+   * Met à jour les informations d'un jeu existant (réservé aux administrateurs).
+   * Gère le remplacement optionnel des fichiers image et PDF.
    */
   async update(req, res, next) {
     try {
@@ -166,7 +165,7 @@ const GameController = {
 
   /**
    * DELETE /api/games/:id
-   * Delete a game (admin only)
+   * Supprime un jeu de la base de données (réservé aux administrateurs).
    */
   async delete(req, res, next) {
     try {

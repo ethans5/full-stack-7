@@ -6,8 +6,8 @@ const { pool } = require('../config/db');
 
 const GameModel = {
   /**
-   * Get all games with optional filters
-   * Supports: category, search (title), min/max price, sorting
+   * Construit et exécute dynamiquement une requête SQL pour récupérer les jeux.
+   * Gère les jointures et filtres (catégorie, recherche textuelle, prix, âge minimum) et le tri.
    */
   async findAll(filters = {}) {
     let query = `
@@ -68,7 +68,8 @@ const GameModel = {
   },
 
   /**
-   * Get a single game by ID, including its categories
+   * Exécute une requête SQL pour récupérer un jeu spécifique par son ID.
+   * Effectue une requête supplémentaire pour récupérer également ses catégories associées.
    */
   async findById(id) {
     const [rows] = await pool.execute(
@@ -90,7 +91,7 @@ const GameModel = {
   },
 
   /**
-   * Create a new game
+   * Exécute une requête SQL pour insérer un nouveau jeu avec toutes ses caractéristiques.
    */
   async create(gameData) {
     const {
@@ -109,7 +110,7 @@ const GameModel = {
   },
 
   /**
-   * Update an existing game
+   * Exécute une requête SQL pour mettre à jour l'ensemble des champs d'un jeu existant.
    */
   async update(id, gameData) {
     const {
@@ -129,7 +130,7 @@ const GameModel = {
   },
 
   /**
-   * Delete a game by ID
+   * Exécute une requête SQL pour supprimer un jeu de la base de données via son ID.
    */
   async delete(id) {
     const [result] = await pool.execute(
@@ -140,8 +141,8 @@ const GameModel = {
   },
 
   /**
-   * Update stock quantity (used after payment)
-   * Uses a connection for transactional context
+   * Diminue le stock d'un jeu d'une quantité donnée.
+   * Peut s'exécuter au sein d'une transaction existante si une connexion est fournie.
    */
   async updateStock(id, quantityToDeduct, connection) {
     const executor = connection || pool;
@@ -153,7 +154,8 @@ const GameModel = {
   },
 
   /**
-   * Set the categories for a game (replaces existing associations)
+   * Remplace les associations de catégories d'un jeu dans la table de pivot `Game_Categories`.
+   * Supprime les anciennes liaisons puis insère les nouvelles.
    */
   async setCategories(gameId, categoryIds) {
     // Remove existing associations

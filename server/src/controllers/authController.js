@@ -7,7 +7,8 @@ const AuthService = require('../services/authService');
 const AuthController = {
   /**
    * POST /api/auth/register
-   * Register a new user
+   * Inscrit un nouvel utilisateur dans la base de données.
+   * Vérifie la présence des champs requis, la validité de l'email et la longueur du mot de passe.
    */
   async register(req, res, next) {
     try {
@@ -55,7 +56,8 @@ const AuthController = {
 
   /**
    * POST /api/auth/login
-   * Login an existing user
+   * Connecte un utilisateur existant.
+   * Vérifie les identifiants et retourne un token JWT si la connexion réussit.
    */
   async login(req, res, next) {
     try {
@@ -88,7 +90,7 @@ const AuthController = {
 
   /**
    * GET /api/auth/profile
-   * Get the current user's profile (requires auth)
+   * Récupère le profil de l'utilisateur actuellement connecté (nécessite une authentification).
    */
   async getProfile(req, res, next) {
     try {

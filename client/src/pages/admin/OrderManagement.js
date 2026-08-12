@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import './OrderManagement.css';
+import '../../styles/OrderManagement.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+/**
+ * Composant de gestion globale des commandes pour les administrateurs.
+ * Permet de visualiser toutes les commandes de la plateforme,
+ * de les filtrer par statut et de modifier leur statut d'avancement.
+ */
 export default function OrderManagement() {
   const { token } = useAuth();
   const [orders, setOrders] = useState([]);
@@ -14,6 +19,9 @@ export default function OrderManagement() {
     fetchOrders();
   }, [statusFilter]);
 
+  /**
+   * Récupère la liste des commandes en appliquant un éventuel filtre de statut.
+   */
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -32,6 +40,10 @@ export default function OrderManagement() {
     }
   };
 
+  /**
+   * Met à jour le statut d'une commande via un appel API
+   * et met à jour l'interface en cas de succès.
+   */
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
       const response = await fetch(`${API_URL}/orders/${orderId}/status`, {
@@ -59,6 +71,9 @@ export default function OrderManagement() {
     }
   };
 
+  /**
+   * Retourne la classe CSS correspondante au badge de statut.
+   */
   const getStatusBadge = (status) => {
     const map = {
       pending: 'badge-warning',

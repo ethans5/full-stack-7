@@ -10,8 +10,9 @@ const SALT_ROUNDS = 10;
 
 const AuthService = {
   /**
-   * Register a new user
-   * Hashes the password, checks for duplicate email, creates the user
+   * Crée un nouvel utilisateur.
+   * Vérifie d'abord que l'email n'est pas déjà pris, puis hache le mot de passe avant insertion.
+   * Génère et retourne un token JWT.
    */
   async register({ name, email, password }) {
     // Check if email already exists
@@ -40,8 +41,9 @@ const AuthService = {
   },
 
   /**
-   * Login an existing user
-   * Verifies email and password, returns JWT token
+   * Connecte un utilisateur existant.
+   * Vérifie que l'email existe et que le mot de passe correspond au hash stocké.
+   * Retourne les données de l'utilisateur (sans le mot de passe) et un token JWT.
    */
   async login({ email, password }) {
     // Find user by email (includes password hash)
@@ -69,7 +71,8 @@ const AuthService = {
   },
 
   /**
-   * Generate a JWT token for a user
+   * Génère un nouveau token JWT contenant l'ID, l'email et le rôle de l'utilisateur.
+   * Signé avec une clé secrète et expire après 24 heures (ou configuré via env).
    */
   generateToken(user) {
     return jwt.sign(
@@ -80,14 +83,15 @@ const AuthService = {
   },
 
   /**
-   * Verify a JWT token and return the decoded payload
+   * Vérifie la signature et la validité d'un token JWT.
+   * Retourne le payload (données) décodé s'il est valide, lève une exception sinon.
    */
   verifyToken(token) {
     return jwt.verify(token, process.env.JWT_SECRET);
   },
 
   /**
-   * Get user profile by ID (without password)
+   * Récupère le profil public complet de l'utilisateur via son ID (le hash du mot de passe est exclu par le Model).
    */
   async getProfile(userId) {
     const user = await UserModel.findById(userId);

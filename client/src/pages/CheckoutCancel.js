@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * Composant affiché si l'utilisateur annule son paiement sur Stripe.
+ * Permet de revenir rapidement au panier pour retenter l'achat ultérieurement.
+ */
 export default function CheckoutCancel() {
   return (
     <div className="page">

@@ -4,12 +4,20 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export const AuthContext = createContext(null);
 
+/**
+ * Fournisseur de contexte pour l'authentification.
+ * Englobe l'application pour fournir l'état global de l'utilisateur (connecté, admin, etc.)
+ * et les méthodes d'authentification à tous les composants enfants.
+ */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(sessionStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
-  // Fetch user profile on mount if token exists
+  /**
+   * Récupère le profil de l'utilisateur depuis l'API si un token est présent en session.
+   * Valide ainsi que le token n'est pas expiré et met à jour l'état de l'utilisateur.
+   */
   const fetchProfile = useCallback(async () => {
     if (!token) {
       setLoading(false);
@@ -41,6 +49,10 @@ export function AuthProvider({ children }) {
     fetchProfile();
   }, [fetchProfile]);
 
+  /**
+   * Tente de connecter un utilisateur avec son email et mot de passe.
+   * En cas de succès, stocke le token en session et met à jour l'état.
+   */
   const login = async (email, password) => {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
@@ -60,6 +72,10 @@ export function AuthProvider({ children }) {
     return { success: false, message: data.message };
   };
 
+  /**
+   * Inscrit un nouvel utilisateur via l'API.
+   * En cas de succès, connecte automatiquement l'utilisateur (stockage du token).
+   */
   const register = async (name, email, password) => {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
@@ -79,6 +95,10 @@ export function AuthProvider({ children }) {
     return { success: false, message: data.message };
   };
 
+  /**
+   * Déconnecte l'utilisateur courant.
+   * Supprime le token de la session et réinitialise les états de contexte.
+   */
   const logout = () => {
     sessionStorage.removeItem('token');
     setToken(null);

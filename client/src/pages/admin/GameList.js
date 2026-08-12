@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import './GameList.css';
+import '../../styles/GameList.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
 
+/**
+ * Composant listant tous les jeux pour l'interface d'administration.
+ * Affiche les jeux sous forme de tableau interactif (prix, stock) avec
+ * des actions pour éditer ou supprimer chaque jeu.
+ */
 export default function GameList() {
   const { token } = useAuth();
   const [games, setGames] = useState([]);
@@ -15,6 +20,9 @@ export default function GameList() {
     fetchGames();
   }, []);
 
+  /**
+   * Récupère la liste complète des jeux depuis l'API.
+   */
   const fetchGames = async () => {
     try {
       const response = await fetch(`${API_URL}/games`);
@@ -29,6 +37,10 @@ export default function GameList() {
     }
   };
 
+  /**
+   * Gère la suppression d'un jeu de manière pessimiste (API d'abord, puis état).
+   * Demande une confirmation à l'utilisateur avant d'agir.
+   */
   const handleDelete = async (gameId, gameTitle) => {
     if (!window.confirm(`Are you sure you want to delete "${gameTitle}"?`)) {
       return;

@@ -7,8 +7,8 @@ const GameModel = require('../models/gameModel');
 
 const OrderService = {
   /**
-   * Create a new order from cart items
-   * Validates stock availability before creating the order
+   * Crée une nouvelle commande en fonction des articles du panier fournis.
+   * Valide rigoureusement la disponibilité des stocks de chaque jeu avant la création en base.
    */
   async createOrder({ user_id, items, stripe_session_id = null }) {
     // Validate each item and calculate total price
@@ -52,8 +52,8 @@ const OrderService = {
   },
 
   /**
-   * Get order details by ID
-   * Validates that the user owns the order (unless admin)
+   * Récupère les détails d'une commande via son ID.
+   * Assure la sécurité en vérifiant que l'utilisateur demandeur est bien le propriétaire de la commande (ou un administrateur).
    */
   async getOrderById(orderId, userId, userRole) {
     const order = await OrderModel.findById(orderId);
@@ -74,21 +74,22 @@ const OrderService = {
   },
 
   /**
-   * Get all orders for a user
+   * Récupère toutes les commandes associées à un utilisateur donné.
    */
   async getUserOrders(userId) {
     return await OrderModel.findByUserId(userId);
   },
 
   /**
-   * Get all orders (admin only)
+   * Récupère l'intégralité des commandes de la plateforme (fonctionnalité d'administration).
    */
   async getAllOrders(statusFilter = null) {
     return await OrderModel.findAll(statusFilter);
   },
 
   /**
-   * Update order status (admin only)
+   * Met à jour manuellement le statut d'une commande (réservé aux administrateurs).
+   * Vérifie que le statut demandé fait partie des statuts autorisés (pending, paid, shipped).
    */
   async updateOrderStatus(orderId, status) {
     const order = await OrderModel.findById(orderId);
@@ -110,8 +111,8 @@ const OrderService = {
   },
 
   /**
-   * Confirm payment for an order (called from Stripe webhook)
-   * Updates status to 'paid' and deducts stock transactionally
+   * Confirme officiellement le paiement d'une commande (déclenché par le webhook de Stripe).
+   * Assure l'idempotence (ne fait rien si déjà payée) et déclenche la déduction des stocks en cascade.
    */
   async confirmPayment(stripeSessionId) {
     const order = await OrderModel.findByStripeSessionId(stripeSessionId);

@@ -1,15 +1,25 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
-import './Cart.css';
+import '../styles/Cart.css';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
 
+/**
+ * Composant représentant la page du panier de l'utilisateur.
+ * Affiche la liste des articles, permet de modifier les quantités, 
+ * de retirer des articles et de procéder au paiement (checkout).
+ */
 export default function Cart() {
   const { items, totalPrice, updateQuantity, removeItem, checkout } = useContext(CartContext);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
+  /**
+   * Gère la validation du panier.
+   * Appelle le CartContext pour créer la commande côté serveur
+   * puis redirige l'utilisateur vers Stripe pour le paiement.
+   */
   const handleCheckout = async () => {
     setError('');
     setLoading(true);

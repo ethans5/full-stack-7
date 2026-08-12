@@ -1,9 +1,45 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { CartContext } from '../context/CartContext';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+/**
+ * Composant affiché suite à un paiement réussi sur Stripe.
+ * Remercie l'utilisateur et propose de retourner à l'accueil ou à l'historique.
+ */
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const { token } = useAuth();
+  const { clearCart } = useContext(CartContext);
+
+  useEffect(() => {
+    // Clear cart immediately on successful checkout page
+    if (clearCart) {
+      clearCart();
+    }
+
+    // Confirm session with backend to mark order as paid
+    if (sessionId && token) {
+      fetch(`${API_URL}/orders/confirm-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ session_id: sessionId }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            console.log('✅ Order confirmed and marked as paid!');
+          }
+        })
+        .catch((err) => console.error('Error confirming session:', err));
+    }
+  }, [sessionId, token, clearCart]);
 
   return (
     <div className="page">
