@@ -84,10 +84,11 @@ const BggService = {
     const names = Array.isArray(item.name) ? item.name : [item.name];
     const primaryName = names.find((n) => n.$.type === 'primary');
 
-    // Extract categories from the BGG links
-    const links = Array.isArray(item.link) ? item.link : [item.link];
+    // Extract categories, mechanics, subdomains & families from the BGG links
+    const links = item.link ? (Array.isArray(item.link) ? item.link : [item.link]) : [];
+    const relevantTypes = ['boardgamecategory', 'boardgamemechanic', 'boardgamesubdomain', 'boardgamefamily'];
     const categories = links
-      .filter((link) => link.$.type === 'boardgamecategory')
+      .filter((link) => link && link.$ && relevantTypes.includes(link.$.type))
       .map((link) => link.$.value);
 
     return {
@@ -97,7 +98,6 @@ const BggService = {
       min_age: parseInt(item.minage?.$.value) || null,
       play_duration: `${item.minplaytime?.$.value || '?'}-${item.maxplaytime?.$.value || '?'} min`,
       image_url: item.image || null,
-      categories,
       year_published: item.yearpublished?.$.value || null,
       bgg_rating: item.statistics?.ratings?.average?.$.value || null,
     };
@@ -106,17 +106,20 @@ const BggService = {
   /**
    * Importe un jeu complet (infos BGG + valeurs par défaut de la boutique) dans la base de données.
    * Met à jour les informations du jeu s'il existe déjà dans la base.
+   * 
+   * @param {number|string} bggId - L'identifiant unique BoardGameGeek du jeu
+   * @param {object} dbConnection - La connexion ou le pool de connexion MySQL (mysql2)
    */
   async importGameToDB(bggId, dbConnection) {
     try {
-      // 1. Fetch game details from BGG API
+      // 1. Récupération des détails complets du jeu depuis l'API BGG
       const gameDetails = await this.getGameDetails(bggId);
 
-      // 2. Default values for shop-specific fields not provided by BGG
+      // 2. Valeurs par défaut pour les champs spécifiques à la boutique
       const defaultPrice = 49.99;
       const defaultStock = 10;
 
-      // 3. Prepare SQL query with ON DUPLICATE KEY UPDATE
+      // 3. Requête d'insertion/mise à jour du jeu principal dans la table Games
       const query = `
         INSERT INTO Games (
           bgg_id, title, description, price, stock_quantity, 
@@ -132,7 +135,7 @@ const BggService = {
           play_duration = VALUES(play_duration);
       `;
 
-      // 4. Execute query
+      // Execution du INSERT / UPDATE du jeu
       const [result] = await dbConnection.execute(query, [
         bggId,
         gameDetails.title,

@@ -89,14 +89,24 @@ const GameService = {
       throw error;
     }
 
-    const deleted = await GameModel.delete(id);
-    if (!deleted) {
-      const error = new Error('Failed to delete game');
-      error.status = 500;
+    try {
+      const deleted = await GameModel.delete(id);
+      if (!deleted) {
+        const error = new Error('Failed to delete game');
+        error.status = 500;
+        throw error;
+      }
+      return game;
+    } catch (error) {
+      if (error.code === 'ER_ROW_IS_REFERENCED_2' || error.errno === 1451) {
+        const customError = new Error(
+          `Cannot delete "${game.title}" because it is linked to existing customer orders. Set its stock to 0 instead.`
+        );
+        customError.status = 400;
+        throw customError;
+      }
       throw error;
     }
-
-    return game;
   },
 };
 

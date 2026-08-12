@@ -130,7 +130,7 @@ export function CartProvider({ children }) {
     const data = await response.json();
 
     if (response.ok) {
-      clearCart();
+      // Cart will be cleared only upon successful payment (on CheckoutSuccess page)
       return { success: true, checkout_url: data.data.checkout_url };
     }
 

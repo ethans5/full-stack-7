@@ -3,6 +3,7 @@
 // ================================================
 
 const BggService = require('../services/bggService');
+const { pool } = require('../config/db');
 
 const BggController = {
   /**
@@ -42,6 +43,39 @@ const BggController = {
       res.json({
         success: true,
         data: { game: details },
+      });
+    } catch (error) {
+      if (error.status) {
+        return res.status(error.status).json({
+          success: false,
+          message: error.message,
+        });
+      }
+      next(error);
+    }
+  },
+
+  /**
+   * POST /api/bgg/import
+   * Déclenche l'importation directe d'un jeu BGG vers la base de données MySQL.
+   */
+  async importGame(req, res, next) {
+    try {
+      const { bggId } = req.body;
+
+      if (!bggId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Le paramètre bggId est obligatoire.',
+        });
+      }
+
+      const result = await BggService.importGameToDB(bggId, pool);
+
+      res.status(201).json({
+        success: true,
+        message: 'Jeu et catégories importés avec succès depuis BoardGameGeek !',
+        data: result,
       });
     } catch (error) {
       if (error.status) {
