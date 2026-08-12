@@ -16,12 +16,12 @@ export default function CheckoutSuccess() {
   const { clearCart } = useContext(CartContext);
 
   useEffect(() => {
-    // Clear cart immediately on successful checkout page
+    // 1. Clear cart once upon landing on success page
     if (clearCart) {
       clearCart();
     }
 
-    // Confirm session with backend to mark order as paid
+    // 2. Confirm session with backend to mark order as paid
     if (sessionId && token) {
       fetch(`${API_URL}/orders/confirm-session`, {
         method: 'POST',
@@ -39,7 +39,7 @@ export default function CheckoutSuccess() {
         })
         .catch((err) => console.error('Error confirming session:', err));
     }
-  }, [sessionId, token, clearCart]);
+  }, [sessionId, token]);
 
   return (
     <div className="page">
@@ -49,16 +49,20 @@ export default function CheckoutSuccess() {
           <h1 className="page-title" style={{ fontSize: '2rem' }}>Payment Successful!</h1>
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: '2rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
             Thank you for your order! Your payment has been processed successfully.
-            You'll receive a confirmation shortly.
+            Your cart has been cleared and your order is being prepared.
           </p>
           {sessionId && (
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginBottom: '2rem' }}>
-              Session: {sessionId}
+              Session Ref: {sessionId}
             </p>
           )}
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Link to="/orders" className="btn btn-primary btn-lg">View My Orders</Link>
-            <Link to="/" className="btn btn-secondary btn-lg">Continue Shopping</Link>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/orders" className="btn btn-primary btn-lg">
+              📦 View My Orders
+            </Link>
+            <Link to="/" className="btn btn-secondary btn-lg">
+              🛒 Continue Shopping
+            </Link>
           </div>
         </div>
       </div>

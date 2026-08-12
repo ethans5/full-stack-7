@@ -34,6 +34,13 @@ export default function Dashboard() {
             <p className="dashboard-card-desc">View all customer orders. Update statuses and track shipments.</p>
             <span className="dashboard-link">Manage Orders →</span>
           </Link>
+
+          <Link to="/admin/categories" className="dashboard-card glass">
+            <span className="dashboard-icon">🏷️</span>
+            <h2 className="dashboard-card-title">Categories</h2>
+            <p className="dashboard-card-desc">Create, rename, and delete game categories in the shop.</p>
+            <span className="dashboard-link">Manage Categories →</span>
+          </Link>
         </div>
       </div>
     </div>

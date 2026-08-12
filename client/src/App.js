@@ -24,6 +24,7 @@ import Dashboard from './pages/admin/Dashboard';
 import GameList from './pages/admin/GameList';
 import GameForm from './pages/admin/GameForm';
 import OrderManagement from './pages/admin/OrderManagement';
+import CategoryManagement from './pages/admin/CategoryManagement';
 
 import './App.css';
 
@@ -71,6 +72,9 @@ function App() {
                 } />
                 <Route path="/admin/orders" element={
                   <AdminRoute><OrderManagement /></AdminRoute>
+                } />
+                <Route path="/admin/categories" element={
+                  <AdminRoute><CategoryManagement /></AdminRoute>
                 } />
               </Routes>
             </main>

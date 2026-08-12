@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import OrderDetailModal from '../../components/OrderDetailModal';
 import '../../styles/OrderManagement.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -14,6 +15,7 @@ export default function OrderManagement() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
     fetchOrders();
@@ -144,9 +146,17 @@ export default function OrderManagement() {
                 </div>
 
                 <div className="admin-order-footer">
-                  <span className={`badge ${getStatusBadge(order.status)}`}>
-                    {order.status}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span className={`badge ${getStatusBadge(order.status)}`}>
+                      {order.status}
+                    </span>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setSelectedOrderId(order.id)}
+                    >
+                      🔍 Full Details
+                    </button>
+                  </div>
                   <div className="admin-status-actions">
                     {order.status === 'pending' && (
                       <button
@@ -169,6 +179,14 @@ export default function OrderManagement() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* Modal de détail de commande */}
+        {selectedOrderId && (
+          <OrderDetailModal
+            orderId={selectedOrderId}
+            onClose={() => setSelectedOrderId(null)}
+          />
         )}
       </div>
     </div>

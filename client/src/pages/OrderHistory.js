@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import OrderDetailModal from '../components/OrderDetailModal';
 import '../styles/OrderHistory.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -13,6 +14,7 @@ export default function OrderHistory() {
   const { token } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -74,7 +76,7 @@ export default function OrderHistory() {
                       })}
                     </span>
                   </div>
-                  <div className="order-header-right">
+                  <div className="order-header-right" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <span className={`badge ${getStatusBadge(order.status)}`}>
                       {order.status}
                     </span>
@@ -95,9 +97,26 @@ export default function OrderHistory() {
                     </div>
                   ))}
                 </div>
+
+                <div style={{ padding: '0.75rem 1rem', borderTop: '1px solid rgba(255, 255, 255, 0.05)', textAlign: 'right' }}>
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => setSelectedOrderId(order.id)}
+                  >
+                    🔍 View Invoice Details
+                  </button>
+                </div>
               </div>
             ))}
           </div>
+        )}
+
+        {/* Modal de détail d'une commande */}
+        {selectedOrderId && (
+          <OrderDetailModal
+            orderId={selectedOrderId}
+            onClose={() => setSelectedOrderId(null)}
+          />
         )}
       </div>
     </div>
